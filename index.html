@@ -3164,10 +3164,23 @@ function mcLoadLocal(event) {
 function mcLoadRemote() {
   const url = document.getElementById('mc-url-in').value.trim();
   if (!url) { toast('ENTER A URL'); return; }
+
+  // Detect YouTube and convert to embed
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/);
+  if (ytMatch) {
+    const embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0`;
+    mcMedia = { type: 'embed', data: embedUrl, name: 'YouTube: ' + ytMatch[1], remote: true };
+    mcRender(mcMedia);
+    document.getElementById('mc-attach-btn').disabled = true; // can't attach embeds to posts
+    document.getElementById('mc-nowplaying').innerHTML = `SIGNAL: <span>YouTube</span>`;
+    resetIdle();
+    return;
+  }
+
   const isVideo = /\.(mp4|webm|ogg|mov)(\?|$)/i.test(url);
   const isAudio = /\.(mp3|wav|ogg|m4a)(\?|$)/i.test(url);
   const type = isVideo ? 'video/mp4' : isAudio ? 'audio/mpeg' : 'image/jpeg';
-  mcMedia = { type, data: url, name: url.split('/').pop().split('?')[0], remote: true };
+  mcMedia = { type, data: url, name: url.split('/').pop().split('?')[0] || 'media', remote: true };
   mcRender(mcMedia);
   document.getElementById('mc-attach-btn').disabled = false;
   document.getElementById('mc-nowplaying').innerHTML = `SIGNAL: <span>${mcMedia.name}</span>`;
@@ -3178,14 +3191,15 @@ function mcRender(media) {
   const screen = document.getElementById('mc-screen');
   const isVideo = media.type.startsWith('video');
   const isAudio = media.type.startsWith('audio');
-  // Remove no-signal div, add media
-  screen.innerHTML = isVideo
+  const isEmbed = media.type === 'embed';
+  screen.innerHTML = isEmbed
+    ? `<iframe src="${media.data}" style="width:100%;height:180px;border:none;display:block;position:relative;z-index:1;" allowfullscreen></iframe>`
+    : isVideo
     ? `<video src="${media.data}" controls style="max-width:100%;max-height:180px;display:block;position:relative;z-index:1;"></video>`
     : isAudio
     ? `<audio src="${media.data}" controls style="width:88%;margin:0 auto;display:block;position:relative;z-index:1;filter:sepia(1) hue-rotate(70deg) saturate(3);"></audio>`
     : `<img src="${media.data}" alt="${media.name}" style="max-width:100%;max-height:180px;display:block;margin:0 auto;position:relative;z-index:1;">`;
-  // If it's an image, add to gallery automatically
-  if (!isVideo && !isAudio) setTimeout(gpRefresh, 50);
+  if (!isVideo && !isAudio && !isEmbed) setTimeout(gpRefresh, 50);
 }
 
 function mcAttach() {
@@ -4038,25 +4052,36 @@ const PROXIES = [
   url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
 ];
 
+function fetchWithTimeout(url, ms) {
+  return new Promise((resolve, reject) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => { controller.abort(); reject(new Error('timeout')); }, ms);
+    fetch(url, { signal: controller.signal })
+      .then(r => { clearTimeout(timer); resolve(r); })
+      .catch(e => { clearTimeout(timer); reject(e); });
+  });
+}
+
 async function fetchRSS(feedUrl) {
   for (const proxy of PROXIES) {
     try {
-      const resp = await fetch(proxy(feedUrl), { signal: AbortSignal.timeout(6000) });
+      const resp = await fetchWithTimeout(proxy(feedUrl), 7000);
       if (!resp.ok) continue;
       const text = await resp.text();
-      // allorigins wraps in JSON; others return raw XML
+      // allorigins wraps in JSON {contents:...}; others return raw XML
       let xml = text;
-      try {
-        const j = JSON.parse(text);
-        if (j.contents) xml = j.contents;
-      } catch {}
+      try { const j = JSON.parse(text); if (j.contents) xml = j.contents; } catch {}
       const doc = new DOMParser().parseFromString(xml, 'text/xml');
-      const items = Array.from(doc.querySelectorAll('item')).slice(0, 25);
-      const titles = items.map(i => i.querySelector('title')?.textContent?.trim() || '').filter(Boolean);
+      // Handle both <item> (RSS) and <entry> (Atom)
+      const nodes = Array.from(doc.querySelectorAll('item, entry')).slice(0, 25);
+      const titles = nodes.map(n => {
+        const t = n.querySelector('title');
+        return t ? (t.textContent || t.innerHTML || '').trim() : '';
+      }).filter(Boolean);
       if (titles.length) return titles;
-    } catch {}
+    } catch(e) { /* try next proxy */ }
   }
-  return null; // all proxies failed
+  return null;
 }
 
 async function fetchNews(source) {
@@ -4084,9 +4109,12 @@ function setTickerItems(items) {
   const joined = items.map(i => `<span class="ticker-item">${i}</span><span class="ticker-sep">▮</span>`).join('');
   // Double for seamless loop
   inner.innerHTML = joined + joined;
-  // Speed: shorter content scrolls faster so it doesn't disappear
+  // Kill and restart the animation so it begins from position 0
+  // (changing innerHTML mid-scroll causes a jump otherwise)
+  inner.style.animation = 'none';
+  void inner.offsetWidth; // force reflow
   const dur = Math.max(30, Math.min(items.length * 6, 180));
-  inner.style.animationDuration = dur + 's';
+  inner.style.animation = `tickerScroll ${dur}s linear infinite`;
 }
 
 function setSource(src) {
