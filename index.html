@@ -2509,6 +2509,11 @@ body {
             <button class="sidebar-btn" onclick="setSource('reuters')" id="src-reuters">[ REUTERS ]</button>
             <button class="sidebar-btn" onclick="setSource('bbc')" id="src-bbc">[ BBC ]</button>
             <button class="sidebar-btn" onclick="setSource('hn')" id="src-hn">[ HACKER NEWS ]</button>
+            <input class="mc-url-in" id="custom-rss-url"
+              placeholder="PASTE RSS URL..." maxlength="300"
+              style="margin-top:8px;width:100%;font-size:12px;"
+              onkeydown="if(event.key==='Enter')loadCustomFeed()">
+            <button class="sidebar-btn" style="margin-top:4px;" onclick="loadCustomFeed()">[ LOAD CUSTOM ]</button>
           </div>
         </aside>
 
@@ -4026,35 +4031,61 @@ const FEEDS = {
   hn:      'https://hnrss.org/frontpage'
 };
 
-const ALLORIGINS = url =>
-  `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+// Multiple CORS proxies — try each in order until one works
+const PROXIES = [
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+];
+
+async function fetchRSS(feedUrl) {
+  for (const proxy of PROXIES) {
+    try {
+      const resp = await fetch(proxy(feedUrl), { signal: AbortSignal.timeout(6000) });
+      if (!resp.ok) continue;
+      const text = await resp.text();
+      // allorigins wraps in JSON; others return raw XML
+      let xml = text;
+      try {
+        const j = JSON.parse(text);
+        if (j.contents) xml = j.contents;
+      } catch {}
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
+      const items = Array.from(doc.querySelectorAll('item')).slice(0, 25);
+      const titles = items.map(i => i.querySelector('title')?.textContent?.trim() || '').filter(Boolean);
+      if (titles.length) return titles;
+    } catch {}
+  }
+  return null; // all proxies failed
+}
 
 async function fetchNews(source) {
-  try {
-    const url  = FEEDS[source] || FEEDS.hn;
-    const resp = await fetch(ALLORIGINS(url));
-    const json = await resp.json();
-    const parser = new DOMParser();
-    const doc  = parser.parseFromString(json.contents, 'text/xml');
-    const items = Array.from(doc.querySelectorAll('item')).slice(0, 20);
-    return items.map(i => i.querySelector('title')?.textContent || '').filter(Boolean);
-  } catch {
-    return ['NEWS FEED UNAVAILABLE', 'CHECK NETWORK CONNECTION'];
-  }
+  const url = FEEDS[source] || source; // allow raw URL for custom feeds
+  const titles = await fetchRSS(url);
+  if (titles && titles.length) return titles;
+  // All proxies dead — return a static fallback that still scrolls
+  return [
+    'MI & YU // TERMINAL v3.0',
+    'NEWS FEED OFFLINE — ENTER A CUSTOM RSS URL BELOW',
+    'REUTERS  BBC  HACKER NEWS  OR PASTE ANY RSS FEED',
+    'HOVER TO PAUSE  ▮  CLICK SOURCE TO RELOAD',
+  ];
 }
 
 async function loadTicker(source) {
+  setTickerItems(['FETCHING NEWS...']);
   const items = await fetchNews(source);
   setTickerItems(items);
 }
 
 function setTickerItems(items) {
   const inner = document.getElementById('ticker-inner');
+  if (!inner) return;
   const joined = items.map(i => `<span class="ticker-item">${i}</span><span class="ticker-sep">▮</span>`).join('');
   // Double for seamless loop
   inner.innerHTML = joined + joined;
-  // Adjust animation duration based on content length
-  const dur = Math.max(60, items.length * 8);
+  // Speed: shorter content scrolls faster so it doesn't disappear
+  const dur = Math.max(30, Math.min(items.length * 6, 180));
   inner.style.animationDuration = dur + 's';
 }
 
@@ -4066,6 +4097,20 @@ function setSource(src) {
   });
   loadTicker(src);
   toast('NEWS SOURCE: ' + src.toUpperCase());
+}
+
+function loadCustomFeed() {
+  const inp = document.getElementById('custom-rss-url');
+  if (!inp) return;
+  const url = inp.value.trim();
+  if (!url) { toast('ENTER AN RSS URL'); return; }
+  newsSource = url;
+  document.querySelectorAll('[id^="src-"]').forEach(b => {
+    b.style.borderColor = '';
+    b.style.color = '';
+  });
+  loadTicker(url);
+  toast('LOADING CUSTOM FEED...');
 }
 
 // ── Export / Import ────────────────────────────
