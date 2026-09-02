@@ -2407,6 +2407,83 @@ body {
   transition: all 0.15s;
 }
 
+
+/* ─── OTOM LINK PANEL ─── */
+#otom-panel {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  width: 420px;
+  height: 520px;
+  min-width: 280px;
+  min-height: 300px;
+  background: #000e00;
+  border: 1px solid #00cfff;
+  box-shadow: 0 0 30px rgba(0,207,255,0.25), 0 0 60px rgba(0,207,255,0.08);
+  z-index: 9500;
+  display: none;
+  flex-direction: column;
+  font-family: var(--font);
+  resize: both;
+  overflow: hidden;
+}
+#otom-panel.open { display: flex; }
+#otom-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.2) 3px, rgba(0,0,0,0.2) 4px);
+  pointer-events: none;
+  z-index: 10;
+}
+.otom-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background: #00cfff;
+  color: #000;
+  font-size: 13px;
+  letter-spacing: 3px;
+  cursor: move;
+  flex-shrink: 0;
+  user-select: none;
+  position: relative;
+  z-index: 11;
+}
+.otom-titlebar-right { display: flex; align-items: center; gap: 10px; font-size: 11px; }
+.otom-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; flex-shrink: 0; transition: background 0.3s, box-shadow 0.3s; }
+.otom-status-dot.live { background: #ff4444; box-shadow: 0 0 6px #ff4444; animation: blink 1s step-end infinite; }
+.otom-close { background: none; border: none; color: #000; font-family: var(--font); font-size: 16px; cursor: pointer; padding: 0 4px; font-weight: bold; }
+.otom-tabs { display: flex; border-bottom: 1px solid #00cfff22; flex-shrink: 0; position: relative; z-index: 11; }
+.otom-tab { flex: 1; padding: 5px 0; background: none; border: none; border-right: 1px solid #00cfff22; color: rgba(0,207,255,0.4); font-family: var(--font); font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: all 0.15s; }
+.otom-tab:hover { color: #00cfff; background: rgba(0,207,255,0.05); }
+.otom-tab.active { color: #00cfff; background: rgba(0,207,255,0.08); border-bottom: 2px solid #00cfff; }
+.otom-canvas-pane { flex: 1; position: relative; overflow: hidden; background: #000; display: none; }
+.otom-canvas-pane.active { display: block; }
+#otom-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
+.otom-no-signal { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(0,207,255,0.25); font-size: 14px; letter-spacing: 3px; text-align: center; line-height: 2.2; }
+.otom-camera-info { position: absolute; bottom: 6px; left: 8px; font-size: 11px; color: rgba(0,207,255,0.5); letter-spacing: 1px; pointer-events: none; z-index: 5; }
+.otom-data-pane { flex: 1; overflow-y: auto; padding: 10px 12px; display: none; position: relative; z-index: 11; }
+.otom-data-pane.active { display: block; }
+.otom-data-pane::-webkit-scrollbar { width: 3px; }
+.otom-data-pane::-webkit-scrollbar-thumb { background: #00cfff33; }
+.otom-field { display: flex; gap: 10px; margin-bottom: 5px; font-size: 13px; border-bottom: 1px solid #00cfff11; padding-bottom: 4px; }
+.otom-field-key { color: rgba(0,207,255,0.5); letter-spacing: 1px; width: 90px; flex-shrink: 0; font-size: 11px; }
+.otom-field-val { color: #00cfff; word-break: break-all; }
+.otom-empty { color: rgba(0,207,255,0.2); font-size: 13px; letter-spacing: 2px; text-align: center; margin-top: 40px; line-height: 2; }
+.otom-model-pane { flex: 1; overflow-y: auto; padding: 10px 12px; display: none; position: relative; z-index: 11; }
+.otom-model-pane.active { display: block; }
+.otom-model-pane::-webkit-scrollbar { width: 3px; }
+.otom-model-pane::-webkit-scrollbar-thumb { background: #00cfff33; }
+.otom-model-stats { display: flex; gap: 16px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #00cfff22; }
+.otom-model-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.otom-model-stat-val { font-size: 22px; color: #00cfff; text-shadow: 0 0 8px #00cfff; }
+.otom-model-stat-lbl { font-size: 10px; color: rgba(0,207,255,0.4); letter-spacing: 2px; }
+.otom-model-json { font-size: 11px; color: rgba(0,207,255,0.6); white-space: pre-wrap; word-break: break-all; line-height: 1.6; max-height: 300px; overflow-y: auto; }
+.otom-footer { padding: 5px 10px; border-top: 1px solid #00cfff22; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: rgba(0,207,255,0.4); letter-spacing: 1px; flex-shrink: 0; position: relative; z-index: 11; }
+.otom-last-ts { color: rgba(0,207,255,0.3); }
+
 .idle-test-btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(255,176,0,0.05); }
 </style>
 </head>
@@ -2498,6 +2575,7 @@ body {
             <input type="file" id="import-file" accept=".json" style="display:none" onchange="importAll(event)">
             <button class="idle-test-btn" onclick="triggerScreensaver()">[ TEST SCREENSAVER ]</button>
             <button class="idle-test-btn" style="border-color:rgba(51,255,51,0.4);color:var(--p-dim);margin-top:4px;" onclick="toggleSettings()">[ ⚙ SETTINGS ]</button>
+            <button class="idle-test-btn" style="border-color:rgba(0,207,255,0.6);color:#00cfff;margin-top:4px;text-shadow:0 0 6px #00cfff;" onclick="toggleOtomPanel()">[ ⊕ OTOM LINK ]</button>
             <button class="idle-test-btn" style="border-color:rgba(255,68,68,0.5);color:#ff4444;margin-top:4px;" onclick="confirmResetApp()">[ ⚠ RESET ALL DATA ]</button>
           </div>
 
@@ -2823,6 +2901,71 @@ body {
       </div>
     </div>
 
+    <!-- ── OTOM LINK PANEL ── -->
+    <div id="otom-panel">
+      <div class="otom-titlebar" id="otom-titlebar">
+        <span>⊕ OTOM LINK</span>
+        <div class="otom-titlebar-right">
+          <div class="otom-status-dot" id="otom-dot"></div>
+          <span id="otom-status-text">WAITING</span>
+          <button class="otom-close" onclick="toggleOtomPanel()">✕</button>
+        </div>
+      </div>
+      <div class="otom-tabs">
+        <button class="otom-tab active" onclick="otomSwitchTab('canvas',this)">CANVAS</button>
+        <button class="otom-tab" onclick="otomSwitchTab('data',this)">ELEMENT</button>
+        <button class="otom-tab" onclick="otomSwitchTab('model',this)">MODEL</button>
+        <button class="otom-tab" onclick="otomSwitchTab('debug',this)">DEBUG</button>
+      </div>
+      <!-- Canvas pane -->
+      <div class="otom-canvas-pane active" id="otom-pane-canvas">
+        <canvas id="otom-canvas"></canvas>
+        <div class="otom-no-signal" id="otom-no-signal">
+          ░░░░░░░░░░░░<br>NO SIGNAL<br>OPEN OTOM ENGINE<br>IN ANOTHER TAB<br>░░░░░░░░░░░░
+        </div>
+        <div class="otom-camera-info" id="otom-cam-info"></div>
+      </div>
+      <!-- Element data pane -->
+      <div class="otom-data-pane" id="otom-pane-data">
+        <div class="otom-empty" id="otom-data-empty">NO ELEMENT DATA<br>SELECT AN ELEMENT<br>IN OTOM AND CLICK SEND</div>
+        <div id="otom-data-fields"></div>
+      </div>
+      <!-- Model pane -->
+      <div class="otom-model-pane" id="otom-pane-model">
+        <div class="otom-empty" id="otom-model-empty">NO MODEL DATA<br>CLICK SEND CANVAS<br>IN OTOM</div>
+        <div id="otom-model-content" style="display:none;">
+          <div class="otom-model-stats">
+            <div class="otom-model-stat">
+              <span class="otom-model-stat-val" id="otom-el-count">0</span>
+              <span class="otom-model-stat-lbl">ELEMENTS</span>
+            </div>
+            <div class="otom-model-stat">
+              <span class="otom-model-stat-val" id="otom-conn-count">0</span>
+              <span class="otom-model-stat-lbl">CONNECTIONS</span>
+            </div>
+            <div class="otom-model-stat">
+              <span class="otom-model-stat-val" id="otom-img-count">0</span>
+              <span class="otom-model-stat-lbl">IMAGES</span>
+            </div>
+          </div>
+          <div class="otom-model-json" id="otom-model-json"></div>
+        </div>
+      </div>
+      <!-- Debug pane -->
+      <div class="otom-data-pane" id="otom-pane-debug" style="background:#000a00;">
+        <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+          <button onclick="otomLog('origin: '+location.origin+' | href: '+location.href)" style="background:none;border:1px solid #00cfff44;color:#00cfff;font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;letter-spacing:1px;">LOG ORIGIN</button>
+          <button onclick="otomLog('channel state: '+(_otomCh?'OPEN':'NULL'))" style="background:none;border:1px solid #00cfff44;color:#00cfff;font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;letter-spacing:1px;">LOG STATE</button>
+          <button onclick="otomSelfTest()" style="background:none;border:1px solid #00cfff44;color:#00cfff;font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;letter-spacing:1px;">SELF TEST</button>
+          <button onclick="if(_otomCh){_otomCh.close();_otomCh=null;}otomConnect();" style="background:none;border:1px solid #ffb00044;color:#ffb000;font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;letter-spacing:1px;">RECONNECT</button>
+        </div>
+        <div id="otom-debug-log" style="font-family:var(--font);"></div>
+      </div>
+        <span>BroadcastChannel: otom_live_monitor</span>
+        <span class="otom-last-ts" id="otom-last-ts">─</span>
+      </div>
+    </div>
+
     <!-- ── SCREENSAVER ── -->
     <div id="screensaver" onclick="dismissScreensaver()">
       <div class="ss-header">
@@ -2934,6 +3077,8 @@ function launchApp() {
   setTimeout(() => {
     boot.style.display = 'none';
     document.getElementById('app').classList.add('visible');
+    // Connect BroadcastChannel immediately — listen in background even if panel is closed
+    otomConnect();
   }, 600);
 }
 
@@ -4402,6 +4547,261 @@ function gpJump(idx) {
 function gpRefresh() {
   gpCollect();
 }
+// ── OTOM LINK — BroadcastChannel Receiver ───────────────────
+let _otomCh       = null;
+let _bcLastFrame  = null;
+let _bcMonZoom    = 1;
+let _bcMonPanX    = 0;
+let _bcMonPanY    = 0;
+let _otomDragging = false;
+let _otomDragOX   = 0;
+let _otomDragOY   = 0;
+let _otomPanning  = false;
+let _otomPanSX    = 0;
+let _otomPanSY    = 0;
+let _otomPanStartX = 0;
+let _otomPanStartY = 0;
+
+function toggleOtomPanel() {
+  const panel = document.getElementById('otom-panel');
+  const isOpen = panel.classList.toggle('open');
+  // Channel is always connected in background — just show/hide panel
+  if (isOpen && _bcLastFrame) otomDrawFrame(); // redraw cached frame immediately
+  if (!isOpen) {
+    // Don't disconnect — keep listening in background so frames are cached
+  }
+}
+
+function otomConnect() {
+  if (_otomCh) {
+    otomLog('already connected, state: ' + (_otomCh ? 'open' : 'null'));
+    return;
+  }
+  try {
+    otomLog('opening BroadcastChannel otom_live_monitor...');
+    _otomCh = new BroadcastChannel('otom_live_monitor');
+    otomLog('channel created OK — listening');
+    _otomCh.onmessage = (e) => {
+      otomLog('MSG received: type=' + (e.data && e.data.type || 'unknown'));
+      const d = e.data;
+      if      (d.type === 'otom_canvas') otomHandleCanvas(d);
+      else if (d.type === 'otom_data')   otomHandleData(d);
+      else if (d.type === 'otom_model')  otomHandleModel(d);
+      else otomLog('unknown type: ' + JSON.stringify(d).slice(0,80));
+    };
+    _otomCh.onmessageerror = (e) => otomLog('MSG ERROR: ' + e);
+    _otomCh.onerror = (e) => { otomLog('CHANNEL ERROR: ' + e); otomSetStatus(false); };
+    otomSetStatus(false);
+    // Send a test ping to ourselves to confirm channel works at all
+    setTimeout(() => {
+      otomLog('sending self-test ping...');
+      try {
+        const testCh = new BroadcastChannel('otom_live_monitor');
+        testCh.postMessage({ type: 'otom_debug_ping', ts: Date.now() });
+        testCh.close();
+        otomLog('self-test ping sent');
+      } catch(pe) { otomLog('self-test FAILED: ' + pe.message); }
+    }, 500);
+  } catch(e) {
+    otomLog('CONNECT FAILED: ' + e.message);
+    console.warn('BroadcastChannel unavailable:', e);
+  }
+}
+
+function otomLog(msg) {
+  const el = document.getElementById('otom-debug-log');
+  if (!el) return;
+  const line = document.createElement('div');
+  const t = new Date().toLocaleTimeString('en-US',{hour12:false});
+  line.style.cssText = 'color:#00cfff;font-size:11px;padding:1px 0;border-bottom:1px solid #00cfff11;';
+  line.textContent = '[' + t + '] ' + msg;
+  el.insertBefore(line, el.firstChild);
+  // Keep max 30 lines
+  while (el.children.length > 30) el.removeChild(el.lastChild);
+  console.log('[OTOM]', msg);
+}
+
+function otomDisconnect() {
+  if (_otomCh) { _otomCh.close(); _otomCh = null; }
+  otomSetStatus(false);
+}
+
+function otomSetStatus(live) {
+  const dot = document.getElementById('otom-dot');
+  const txt = document.getElementById('otom-status-text');
+  if (!dot || !txt) return;
+  dot.classList.toggle('live', live);
+  txt.textContent = live ? 'LIVE' : 'WAITING';
+}
+
+function otomTs(ts) {
+  return new Date(ts).toLocaleTimeString('en-US', { hour12: false });
+}
+
+function otomHandleCanvas(d) {
+  const noSig = document.getElementById('otom-no-signal');
+  if (noSig) noSig.style.display = 'none';
+  otomSetStatus(true);
+
+  // Update sidebar button to show live signal
+  const btn = document.querySelector('[onclick="toggleOtomPanel()"]');
+  if (btn) btn.style.borderColor = '#ff4444';
+
+  const img = new Image();
+  img.onload = () => {
+    _bcLastFrame = img;
+    // Only draw if panel is open and on canvas tab
+    const panel = document.getElementById('otom-panel');
+    const pane  = document.getElementById('otom-pane-canvas');
+    if (panel && panel.classList.contains('open') && pane && pane.classList.contains('active')) {
+      otomDrawFrame();
+    }
+  };
+  img.src = d.frame;
+
+  const cam = document.getElementById('otom-cam-info');
+  if (cam && d.camera)
+    cam.textContent = `X:${Math.round(d.camera.x)} Y:${Math.round(d.camera.y)} ZOOM:${(d.camera.zoom*100).toFixed(0)}% -- LOCAL:${(_bcMonZoom*100).toFixed(0)}%`;
+  const ts = document.getElementById('otom-last-ts');
+  if (ts) ts.textContent = otomTs(d.ts);
+}
+
+function otomDrawFrame() {
+  const canvas = document.getElementById('otom-canvas');
+  if (!canvas || !_bcLastFrame) return;
+  const pane = document.getElementById('otom-pane-canvas');
+  canvas.width  = pane.clientWidth  || 400;
+  canvas.height = pane.clientHeight || 400;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const scaleX = canvas.width  / _bcLastFrame.width;
+  const scaleY = canvas.height / _bcLastFrame.height;
+  const fitScale = Math.min(scaleX, scaleY);
+  const drawW = _bcLastFrame.width  * fitScale * _bcMonZoom;
+  const drawH = _bcLastFrame.height * fitScale * _bcMonZoom;
+  const drawX = (canvas.width  - drawW) / 2 + _bcMonPanX;
+  const drawY = (canvas.height - drawH) / 2 + _bcMonPanY;
+  ctx.drawImage(_bcLastFrame, drawX, drawY, drawW, drawH);
+}
+
+function otomHandleData(d) {
+  const empty  = document.getElementById('otom-data-empty');
+  const fields = document.getElementById('otom-data-fields');
+  if (empty)  empty.style.display  = 'none';
+  if (fields) fields.style.display = 'block';
+  const KEYS = ['name','fullName','text','kind','numDesignation','notations','agent',
+    'priority','fusable','socket','isMesh','welded','hidden','pinned',
+    'x','y','width','height','rotation','assetName','partsCount',
+    'adhocGroup','fusionId','allowed','contents'];
+  if (fields) {
+    fields.innerHTML = KEYS.map(k => {
+      const val = d[k];
+      if (val === undefined || val === null || val === '') return '';
+      const display = typeof val === 'object' ? JSON.stringify(val) : String(val);
+      return '<div class="otom-field"><span class="otom-field-key">'+k.toUpperCase()+'</span><span class="otom-field-val">'+display+'</span></div>';
+    }).join('');
+  }
+  const ts = document.getElementById('otom-last-ts');
+  if (ts) ts.textContent = otomTs(d.ts);
+  otomSetStatus(true);
+}
+
+function otomHandleModel(d) {
+  const empty   = document.getElementById('otom-model-empty');
+  const content = document.getElementById('otom-model-content');
+  if (empty)   empty.style.display   = 'none';
+  if (content) content.style.display = 'block';
+  const el   = document.getElementById('otom-el-count');
+  const conn = document.getElementById('otom-conn-count');
+  const img  = document.getElementById('otom-img-count');
+  if (el)   el.textContent   = d.elCount   || 0;
+  if (conn) conn.textContent = d.connCount || 0;
+  if (img && d.state) img.textContent = (d.state.images || []).length;
+  const json = document.getElementById('otom-model-json');
+  if (json && d.state) {
+    const summary = { camera: d.state.camera, connections: d.connCount, elements: d.elCount,
+      images: (d.state.images||[]).length, connections_sample: (d.state.connections||[]).slice(0,3) };
+    json.textContent = JSON.stringify(summary, null, 2);
+  }
+  const ts = document.getElementById('otom-last-ts');
+  if (ts) ts.textContent = otomTs(d.ts);
+  otomSetStatus(true);
+}
+
+function otomSwitchTab(tab, btn) {
+  document.querySelectorAll('.otom-tab').forEach(b => b.classList.remove('active'));
+  ['canvas','data','model','debug'].forEach(t => {
+    const p = document.getElementById('otom-pane-'+t);
+    if (p) p.classList.toggle('active', t === tab);
+  });
+  btn.classList.add('active');
+  if (tab === 'canvas' && _bcLastFrame) otomDrawFrame();
+}
+
+function otomSelfTest() {
+  otomLog('--- SELF TEST START ---');
+  otomLog('origin: ' + location.origin);
+  otomLog('href: ' + location.href);
+  otomLog('channel: ' + (_otomCh ? 'OPEN' : 'NULL'));
+  try {
+    const ch = new BroadcastChannel('otom_live_monitor');
+    ch.onmessage = (e) => {
+      otomLog('SELF TEST RECEIVED: ' + JSON.stringify(e.data).slice(0,60));
+      ch.close();
+    };
+    ch.postMessage({ type: 'otom_self_test', ts: Date.now(), msg: 'ping from mi-yu' });
+    otomLog('self-test message posted — waiting for echo...');
+    setTimeout(() => { try { ch.close(); } catch {} }, 2000);
+  } catch(e) {
+    otomLog('SELF TEST ERROR: ' + e.message);
+  }
+}
+
+// Drag and canvas pan/zoom — wired after DOM ready
+setTimeout(() => {
+  const titlebar = document.getElementById('otom-titlebar');
+  const panel    = document.getElementById('otom-panel');
+  if (!titlebar || !panel) return;
+
+  titlebar.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('otom-close')) return;
+    _otomDragging = true;
+    const rect = panel.getBoundingClientRect();
+    _otomDragOX = e.clientX - rect.left;
+    _otomDragOY = e.clientY - rect.top;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (_otomDragging) {
+      panel.style.left  = (e.clientX - _otomDragOX) + 'px';
+      panel.style.top   = (e.clientY - _otomDragOY) + 'px';
+      panel.style.right = 'auto';
+    }
+    if (_otomPanning) {
+      _bcMonPanX = _otomPanStartX + (e.clientX - _otomPanSX);
+      _bcMonPanY = _otomPanStartY + (e.clientY - _otomPanSY);
+      otomDrawFrame();
+    }
+  });
+
+  document.addEventListener('mouseup', () => { _otomDragging = false; _otomPanning = false; });
+
+  const canvas = document.getElementById('otom-canvas');
+  if (canvas) {
+    canvas.addEventListener('mousedown', e => {
+      _otomPanning = true; _otomPanSX = e.clientX; _otomPanSY = e.clientY;
+      _otomPanStartX = _bcMonPanX; _otomPanStartY = _bcMonPanY;
+      e.preventDefault();
+    });
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      _bcMonZoom = Math.min(8, Math.max(0.25, _bcMonZoom * (e.deltaY > 0 ? 0.9 : 1.1)));
+      otomDrawFrame();
+    }, { passive: false });
+  }
+}, 6000); // after boot
+
 async function init() {
   await initDB();
 
