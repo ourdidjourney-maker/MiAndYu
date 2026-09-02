@@ -2417,9 +2417,9 @@ body {
   height: 520px;
   min-width: 280px;
   min-height: 300px;
-  background: #000e00;
-  border: 1px solid #00cfff;
-  box-shadow: 0 0 30px rgba(0,207,255,0.25), 0 0 60px rgba(0,207,255,0.08);
+  background: #ffffff;
+  border: 3px solid #1a1a1a;
+  box-shadow: 6px 6px 0 #000, 0 0 30px rgba(0,0,0,0.5);
   z-index: 9500;
   display: none;
   flex-direction: column;
@@ -2432,7 +2432,10 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.2) 3px, rgba(0,0,0,0.2) 4px);
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px
+  );
   pointer-events: none;
   z-index: 10;
 }
@@ -2441,8 +2444,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 5px 10px;
-  background: #00cfff;
-  color: #000;
+  background: #1a1a1a;
+  color: #ffff00;
   font-size: 13px;
   letter-spacing: 3px;
   cursor: move;
@@ -2450,39 +2453,72 @@ body {
   user-select: none;
   position: relative;
   z-index: 11;
+  border-bottom: 3px solid #ffff00;
 }
 .otom-titlebar-right { display: flex; align-items: center; gap: 10px; font-size: 11px; }
-.otom-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; flex-shrink: 0; transition: background 0.3s, box-shadow 0.3s; }
+.otom-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; flex-shrink: 0; transition: background 0.3s, box-shadow 0.3s; }
 .otom-status-dot.live { background: #ff4444; box-shadow: 0 0 6px #ff4444; animation: blink 1s step-end infinite; }
-.otom-close { background: none; border: none; color: #000; font-family: var(--font); font-size: 16px; cursor: pointer; padding: 0 4px; font-weight: bold; }
-.otom-tabs { display: flex; border-bottom: 1px solid #00cfff22; flex-shrink: 0; position: relative; z-index: 11; }
-.otom-tab { flex: 1; padding: 5px 0; background: none; border: none; border-right: 1px solid #00cfff22; color: rgba(0,207,255,0.4); font-family: var(--font); font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: all 0.15s; }
-.otom-tab:hover { color: #00cfff; background: rgba(0,207,255,0.05); }
-.otom-tab.active { color: #00cfff; background: rgba(0,207,255,0.08); border-bottom: 2px solid #00cfff; }
-.otom-canvas-pane { flex: 1; position: relative; overflow: hidden; background: #000; display: none; }
+.otom-close { background: none; border: 2px solid #ffff00; color: #ffff00; font-family: var(--font); font-size: 14px; cursor: pointer; padding: 0 6px; font-weight: bold; transition: all 0.1s; }
+.otom-close:hover { background: #ffff00; color: #1a1a1a; }
+.otom-tabs { display: flex; border-bottom: 2px solid #1a1a1a; flex-shrink: 0; position: relative; z-index: 11; background: #f0f0f0; }
+.otom-tab { flex: 1; padding: 5px 0; background: none; border: none; border-right: 1px solid #ccc; color: #666; font-family: var(--font); font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: all 0.15s; }
+.otom-tab:hover { color: #000; background: #e0e0e0; }
+.otom-tab.active { color: #000; background: #fff; border-bottom: 3px solid #1a1a1a; font-weight: bold; }
+.otom-canvas-pane { flex: 1; position: relative; overflow: hidden; background: #ffffff; display: none; }
 .otom-canvas-pane.active { display: block; }
-#otom-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
-.otom-no-signal { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(0,207,255,0.25); font-size: 14px; letter-spacing: 3px; text-align: center; line-height: 2.2; }
-.otom-camera-info { position: absolute; bottom: 6px; left: 8px; font-size: 11px; color: rgba(0,207,255,0.5); letter-spacing: 1px; pointer-events: none; z-index: 5; }
-.otom-data-pane { flex: 1; overflow-y: auto; padding: 10px 12px; display: none; position: relative; z-index: 11; }
+#otom-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; background: #fff; }
+.otom-no-signal {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; color: #999;
+  font-size: 13px; letter-spacing: 3px; text-align: center; line-height: 2.2;
+  gap: 12px;
+}
+/* Nuclear radiation SVG symbols */
+.otom-no-signal::before {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='8' fill='%23333'/%3E%3Cpath d='M50 50 L50 10 A40 40 0 0 1 84.6 30 Z' fill='%23333'/%3E%3Cpath d='M50 50 L84.6 30 A40 40 0 0 1 84.6 70 Z' fill='white'/%3E%3Cpath d='M50 50 L84.6 70 A40 40 0 0 1 50 90 Z' fill='%23333'/%3E%3Cpath d='M50 50 L50 90 A40 40 0 0 1 15.4 70 Z' fill='white'/%3E%3Cpath d='M50 50 L15.4 70 A40 40 0 0 1 15.4 30 Z' fill='%23333'/%3E%3Cpath d='M50 50 L15.4 30 A40 40 0 0 1 50 10 Z' fill='white'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23333'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.3;
+  animation: otomSpin 8s linear infinite;
+}
+@keyframes otomSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.otom-camera-info { position: absolute; bottom: 6px; left: 8px; font-size: 11px; color: #666; letter-spacing: 1px; pointer-events: none; z-index: 5; background: rgba(255,255,255,0.8); padding: 1px 4px; }
+.otom-data-pane { flex: 1; overflow-y: auto; padding: 10px 12px; display: none; position: relative; z-index: 11; background: #fff; }
 .otom-data-pane.active { display: block; }
 .otom-data-pane::-webkit-scrollbar { width: 3px; }
-.otom-data-pane::-webkit-scrollbar-thumb { background: #00cfff33; }
-.otom-field { display: flex; gap: 10px; margin-bottom: 5px; font-size: 13px; border-bottom: 1px solid #00cfff11; padding-bottom: 4px; }
-.otom-field-key { color: rgba(0,207,255,0.5); letter-spacing: 1px; width: 90px; flex-shrink: 0; font-size: 11px; }
-.otom-field-val { color: #00cfff; word-break: break-all; }
-.otom-empty { color: rgba(0,207,255,0.2); font-size: 13px; letter-spacing: 2px; text-align: center; margin-top: 40px; line-height: 2; }
-.otom-model-pane { flex: 1; overflow-y: auto; padding: 10px 12px; display: none; position: relative; z-index: 11; }
+.otom-data-pane::-webkit-scrollbar-thumb { background: #ccc; }
+.otom-field { display: flex; gap: 10px; margin-bottom: 5px; font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+.otom-field-key { color: #999; letter-spacing: 1px; width: 90px; flex-shrink: 0; font-size: 11px; }
+.otom-field-val { color: #000; word-break: break-all; }
+.otom-empty { color: #bbb; font-size: 13px; letter-spacing: 2px; text-align: center; margin-top: 40px; line-height: 2; }
+.otom-model-pane { flex: 1; overflow-y: auto; padding: 10px 12px; display: none; position: relative; z-index: 11; background: #fff; }
 .otom-model-pane.active { display: block; }
 .otom-model-pane::-webkit-scrollbar { width: 3px; }
-.otom-model-pane::-webkit-scrollbar-thumb { background: #00cfff33; }
-.otom-model-stats { display: flex; gap: 16px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #00cfff22; }
+.otom-model-pane::-webkit-scrollbar-thumb { background: #ccc; }
+.otom-model-stats { display: flex; gap: 16px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #1a1a1a; }
 .otom-model-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.otom-model-stat-val { font-size: 22px; color: #00cfff; text-shadow: 0 0 8px #00cfff; }
-.otom-model-stat-lbl { font-size: 10px; color: rgba(0,207,255,0.4); letter-spacing: 2px; }
-.otom-model-json { font-size: 11px; color: rgba(0,207,255,0.6); white-space: pre-wrap; word-break: break-all; line-height: 1.6; max-height: 300px; overflow-y: auto; }
-.otom-footer { padding: 5px 10px; border-top: 1px solid #00cfff22; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: rgba(0,207,255,0.4); letter-spacing: 1px; flex-shrink: 0; position: relative; z-index: 11; }
-.otom-last-ts { color: rgba(0,207,255,0.3); }
+.otom-model-stat-val { font-size: 22px; color: #1a1a1a; }
+.otom-model-stat-lbl { font-size: 10px; color: #999; letter-spacing: 2px; }
+.otom-model-json { font-size: 11px; color: #555; white-space: pre-wrap; word-break: break-all; line-height: 1.6; max-height: 300px; overflow-y: auto; }
+.otom-footer { padding: 5px 10px; border-top: 2px solid #1a1a1a; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #999; letter-spacing: 1px; flex-shrink: 0; position: relative; z-index: 11; background: #f0f0f0; }
+.otom-last-ts { color: #aaa; }
+
+/* Nuclear warning stripe on footer */
+.otom-footer::before {
+  content: '☢ OTOM LIVE MONITOR ☢';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #1a1a1a;
+  letter-spacing: 2px;
+  opacity: 0.3;
+}
 
 .idle-test-btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(255,176,0,0.05); }
 </style>
@@ -2915,7 +2951,6 @@ body {
         <button class="otom-tab active" onclick="otomSwitchTab('canvas',this)">CANVAS</button>
         <button class="otom-tab" onclick="otomSwitchTab('data',this)">ELEMENT</button>
         <button class="otom-tab" onclick="otomSwitchTab('model',this)">MODEL</button>
-        <button class="otom-tab" onclick="otomSwitchTab('debug',this)">DEBUG</button>
       </div>
       <!-- Canvas pane -->
       <div class="otom-canvas-pane active" id="otom-pane-canvas">
@@ -2951,16 +2986,7 @@ body {
           <div class="otom-model-json" id="otom-model-json"></div>
         </div>
       </div>
-      <!-- Debug pane -->
-      <div class="otom-data-pane" id="otom-pane-debug" style="background:#000a00;">
-        <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
-          <button onclick="otomLog('origin: '+location.origin+' | href: '+location.href)" style="background:none;border:1px solid #00cfff44;color:#00cfff;font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;letter-spacing:1px;">LOG ORIGIN</button>
-          <button onclick="otomLog('channel state: '+(_otomCh?'OPEN':'NULL'))" style="background:none;border:1px solid #00cfff44;color:#00cfff;font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;letter-spacing:1px;">LOG STATE</button>
-          <button onclick="otomSelfTest()" style="background:none;border:1px solid #00cfff44;color:#00cfff;font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;letter-spacing:1px;">SELF TEST</button>
-          <button onclick="if(_otomCh){_otomCh.close();_otomCh=null;}otomConnect();" style="background:none;border:1px solid #ffb00044;color:#ffb000;font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;letter-spacing:1px;">RECONNECT</button>
-        </div>
-        <div id="otom-debug-log" style="font-family:var(--font);"></div>
-      </div>
+      <div class="otom-footer">
         <span>BroadcastChannel: otom_live_monitor</span>
         <span class="otom-last-ts" id="otom-last-ts">─</span>
       </div>
@@ -4573,188 +4599,18 @@ function toggleOtomPanel() {
 }
 
 function otomConnect() {
-  if (_otomCh) {
-    otomLog('already connected, state: ' + (_otomCh ? 'open' : 'null'));
-    return;
-  }
+  if (_otomCh) return;
   try {
-    otomLog('opening BroadcastChannel otom_live_monitor...');
     _otomCh = new BroadcastChannel('otom_live_monitor');
-    otomLog('channel created OK — listening');
     _otomCh.onmessage = (e) => {
-      otomLog('MSG received: type=' + (e.data && e.data.type || 'unknown'));
       const d = e.data;
       if      (d.type === 'otom_canvas') otomHandleCanvas(d);
       else if (d.type === 'otom_data')   otomHandleData(d);
       else if (d.type === 'otom_model')  otomHandleModel(d);
-      else otomLog('unknown type: ' + JSON.stringify(d).slice(0,80));
     };
-    _otomCh.onmessageerror = (e) => otomLog('MSG ERROR: ' + e);
-    _otomCh.onerror = (e) => { otomLog('CHANNEL ERROR: ' + e); otomSetStatus(false); };
+    _otomCh.onerror = () => otomSetStatus(false);
     otomSetStatus(false);
-    // Send a test ping to ourselves to confirm channel works at all
-    setTimeout(() => {
-      otomLog('sending self-test ping...');
-      try {
-        const testCh = new BroadcastChannel('otom_live_monitor');
-        testCh.postMessage({ type: 'otom_debug_ping', ts: Date.now() });
-        testCh.close();
-        otomLog('self-test ping sent');
-      } catch(pe) { otomLog('self-test FAILED: ' + pe.message); }
-    }, 500);
-  } catch(e) {
-    otomLog('CONNECT FAILED: ' + e.message);
-    console.warn('BroadcastChannel unavailable:', e);
-  }
-}
-
-function otomLog(msg) {
-  const el = document.getElementById('otom-debug-log');
-  if (!el) return;
-  const line = document.createElement('div');
-  const t = new Date().toLocaleTimeString('en-US',{hour12:false});
-  line.style.cssText = 'color:#00cfff;font-size:11px;padding:1px 0;border-bottom:1px solid #00cfff11;';
-  line.textContent = '[' + t + '] ' + msg;
-  el.insertBefore(line, el.firstChild);
-  // Keep max 30 lines
-  while (el.children.length > 30) el.removeChild(el.lastChild);
-  console.log('[OTOM]', msg);
-}
-
-function otomDisconnect() {
-  if (_otomCh) { _otomCh.close(); _otomCh = null; }
-  otomSetStatus(false);
-}
-
-function otomSetStatus(live) {
-  const dot = document.getElementById('otom-dot');
-  const txt = document.getElementById('otom-status-text');
-  if (!dot || !txt) return;
-  dot.classList.toggle('live', live);
-  txt.textContent = live ? 'LIVE' : 'WAITING';
-}
-
-function otomTs(ts) {
-  return new Date(ts).toLocaleTimeString('en-US', { hour12: false });
-}
-
-function otomHandleCanvas(d) {
-  const noSig = document.getElementById('otom-no-signal');
-  if (noSig) noSig.style.display = 'none';
-  otomSetStatus(true);
-
-  // Update sidebar button to show live signal
-  const btn = document.querySelector('[onclick="toggleOtomPanel()"]');
-  if (btn) btn.style.borderColor = '#ff4444';
-
-  const img = new Image();
-  img.onload = () => {
-    _bcLastFrame = img;
-    // Only draw if panel is open and on canvas tab
-    const panel = document.getElementById('otom-panel');
-    const pane  = document.getElementById('otom-pane-canvas');
-    if (panel && panel.classList.contains('open') && pane && pane.classList.contains('active')) {
-      otomDrawFrame();
-    }
-  };
-  img.src = d.frame;
-
-  const cam = document.getElementById('otom-cam-info');
-  if (cam && d.camera)
-    cam.textContent = `X:${Math.round(d.camera.x)} Y:${Math.round(d.camera.y)} ZOOM:${(d.camera.zoom*100).toFixed(0)}% -- LOCAL:${(_bcMonZoom*100).toFixed(0)}%`;
-  const ts = document.getElementById('otom-last-ts');
-  if (ts) ts.textContent = otomTs(d.ts);
-}
-
-function otomDrawFrame() {
-  const canvas = document.getElementById('otom-canvas');
-  if (!canvas || !_bcLastFrame) return;
-  const pane = document.getElementById('otom-pane-canvas');
-  canvas.width  = pane.clientWidth  || 400;
-  canvas.height = pane.clientHeight || 400;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const scaleX = canvas.width  / _bcLastFrame.width;
-  const scaleY = canvas.height / _bcLastFrame.height;
-  const fitScale = Math.min(scaleX, scaleY);
-  const drawW = _bcLastFrame.width  * fitScale * _bcMonZoom;
-  const drawH = _bcLastFrame.height * fitScale * _bcMonZoom;
-  const drawX = (canvas.width  - drawW) / 2 + _bcMonPanX;
-  const drawY = (canvas.height - drawH) / 2 + _bcMonPanY;
-  ctx.drawImage(_bcLastFrame, drawX, drawY, drawW, drawH);
-}
-
-function otomHandleData(d) {
-  const empty  = document.getElementById('otom-data-empty');
-  const fields = document.getElementById('otom-data-fields');
-  if (empty)  empty.style.display  = 'none';
-  if (fields) fields.style.display = 'block';
-  const KEYS = ['name','fullName','text','kind','numDesignation','notations','agent',
-    'priority','fusable','socket','isMesh','welded','hidden','pinned',
-    'x','y','width','height','rotation','assetName','partsCount',
-    'adhocGroup','fusionId','allowed','contents'];
-  if (fields) {
-    fields.innerHTML = KEYS.map(k => {
-      const val = d[k];
-      if (val === undefined || val === null || val === '') return '';
-      const display = typeof val === 'object' ? JSON.stringify(val) : String(val);
-      return '<div class="otom-field"><span class="otom-field-key">'+k.toUpperCase()+'</span><span class="otom-field-val">'+display+'</span></div>';
-    }).join('');
-  }
-  const ts = document.getElementById('otom-last-ts');
-  if (ts) ts.textContent = otomTs(d.ts);
-  otomSetStatus(true);
-}
-
-function otomHandleModel(d) {
-  const empty   = document.getElementById('otom-model-empty');
-  const content = document.getElementById('otom-model-content');
-  if (empty)   empty.style.display   = 'none';
-  if (content) content.style.display = 'block';
-  const el   = document.getElementById('otom-el-count');
-  const conn = document.getElementById('otom-conn-count');
-  const img  = document.getElementById('otom-img-count');
-  if (el)   el.textContent   = d.elCount   || 0;
-  if (conn) conn.textContent = d.connCount || 0;
-  if (img && d.state) img.textContent = (d.state.images || []).length;
-  const json = document.getElementById('otom-model-json');
-  if (json && d.state) {
-    const summary = { camera: d.state.camera, connections: d.connCount, elements: d.elCount,
-      images: (d.state.images||[]).length, connections_sample: (d.state.connections||[]).slice(0,3) };
-    json.textContent = JSON.stringify(summary, null, 2);
-  }
-  const ts = document.getElementById('otom-last-ts');
-  if (ts) ts.textContent = otomTs(d.ts);
-  otomSetStatus(true);
-}
-
-function otomSwitchTab(tab, btn) {
-  document.querySelectorAll('.otom-tab').forEach(b => b.classList.remove('active'));
-  ['canvas','data','model','debug'].forEach(t => {
-    const p = document.getElementById('otom-pane-'+t);
-    if (p) p.classList.toggle('active', t === tab);
-  });
-  btn.classList.add('active');
-  if (tab === 'canvas' && _bcLastFrame) otomDrawFrame();
-}
-
-function otomSelfTest() {
-  otomLog('--- SELF TEST START ---');
-  otomLog('origin: ' + location.origin);
-  otomLog('href: ' + location.href);
-  otomLog('channel: ' + (_otomCh ? 'OPEN' : 'NULL'));
-  try {
-    const ch = new BroadcastChannel('otom_live_monitor');
-    ch.onmessage = (e) => {
-      otomLog('SELF TEST RECEIVED: ' + JSON.stringify(e.data).slice(0,60));
-      ch.close();
-    };
-    ch.postMessage({ type: 'otom_self_test', ts: Date.now(), msg: 'ping from mi-yu' });
-    otomLog('self-test message posted — waiting for echo...');
-    setTimeout(() => { try { ch.close(); } catch {} }, 2000);
-  } catch(e) {
-    otomLog('SELF TEST ERROR: ' + e.message);
-  }
+  } catch(e) { console.warn('BroadcastChannel unavailable:', e); }
 }
 
 // Drag and canvas pan/zoom — wired after DOM ready
